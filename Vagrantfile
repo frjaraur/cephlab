@@ -68,13 +68,15 @@ Vagrant.configure(2) do |config|
 	#echo deb http://download.ceph.com/debian-{ceph-stable-release}/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
 	echo deb http://download.ceph.com/debian-jewel/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
 	apt-get update -qq && sudo apt-get install -qq ceph-deploy	
-	useradd -d /home/ceph -m ceph
+	useradd -d /home/ceph -m -s /bin/bash ceph
 	echo "ceph ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers
-	mkdir /home/ceph/.ssh
+	mkdir /home/ceph/.ssh 2>/dev/null
+	chown -R ceph:ceph /home/ceph/.ssh
 	rm -f /home/ceph/.ssh/id_rsa 2>/dev/null
 	[ ! -d /tmp_deploying_stage/ssh/ ] && mkdir /tmp_deploying_stage/ssh && chown -R ceph:ceph /tmp_deploying_stage/ssh
 	[ ! -f /tmp_deploying_stage/ssh/id_rsa ] && sudo -u ceph ssh-keygen -t rsa -N "" -f /home/ceph/.ssh/id_rsa && cp -p /home/ceph/.ssh/id_rsa* /tmp_deploying_stage/ssh/
 	[ ! -f /home/ceph/.ssh/id_rsa ] && cp -p /tmp_deploying_stage/ssh/id_rsa* /home/ceph/.ssh/
+	cp -p /home/ceph/.ssh/id_rsa.pub /home/ceph/.ssh/authorized_keys
 	chown -R ceph:ceph /home/ceph/.ssh 2>/dev/null
       SHELL
 
