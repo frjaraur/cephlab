@@ -78,6 +78,7 @@ Vagrant.configure(2) do |config|
 	[ ! -f /home/ceph/.ssh/id_rsa ] && cp -p /tmp_deploying_stage/ssh/id_rsa* /home/ceph/.ssh/
 	cp -p /home/ceph/.ssh/id_rsa.pub /home/ceph/.ssh/authorized_keys
 	chown -R ceph:ceph /home/ceph/.ssh 2>/dev/null
+	echo changeme | passwd ceph --stdin
       SHELL
 
 
