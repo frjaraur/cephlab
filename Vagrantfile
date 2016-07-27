@@ -70,9 +70,12 @@ Vagrant.configure(2) do |config|
 	apt-get update -qq && sudo apt-get install -qq ceph-deploy	
 	useradd -d /home/ceph -m ceph
 	echo "ceph ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers
-	sudo -u ceph mkdir /home/ceph/.ssh
-	sudo -u ceph ssh-keygen -t rsa -N "" -f /home/ceph/.ssh/id_rsa
-
+	mkdir /home/ceph/.ssh
+	rm -f /home/ceph/.ssh/id_rsa 2>/dev/null
+	[ ! -d /tmp_deploying_stage/ssh/ ] && mkdir /tmp_deploying_stage/ssh && chown -R ceph:ceph /tmp_deploying_stage/ssh
+	[ ! -f /tmp_deploying_stage/ssh/id_rsa ] && sudo -u ceph ssh-keygen -t rsa -N "" -f /home/ceph/.ssh/id_rsa && cp -p /home/ceph/.ssh/id_rsa* /tmp_deploying_stage/ssh/
+	[ ! -f /home/ceph/.ssh/id_rsa ] && cp -p /tmp_deploying_stage/ssh/id_rsa* /home/ceph/.ssh/
+	chown -R ceph:ceph /home/ceph/.ssh 2>/dev/null
       SHELL
 
 
